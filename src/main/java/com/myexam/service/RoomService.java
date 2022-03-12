@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.myexam.mapper.RoomMapper;
 import com.myexam.mapper.RoomStudentMergeMapper;
 import com.myexam.mapper.StudentPaperMapper;
+import com.myexam.mapper.TeacherPaperMapper;
 import com.myexam.po.Room;
 import com.myexam.po.RoomStudentMerge;
 import com.myexam.vo.*;
@@ -22,6 +23,8 @@ public class RoomService {
     RoomStudentMergeMapper roomStudentMergeMapper;
     @Resource
     RoomMapper roomMapper;
+    @Resource
+    TeacherPaperMapper teacherPaperMapper;
 
     public boolean isExist(String roomId){
         return roomMapper.selectById(roomId) != null;
@@ -39,7 +42,7 @@ public class RoomService {
                 .setCourse(course)
                 .setSchoolClass(schoolClass)
                 .setTeacherId(teacherId);
-        if(roomId!=null){
+        if(!"".equals(roomId)){
             room.setId(roomId);
             roomMapper.updateById(room);
             return "";
@@ -63,8 +66,11 @@ public class RoomService {
        return roomMapper.selectStudentRoomDetail(roomId,studentId);
     }
 
-    public TeacherRoomDetailVO getTeacherRoomDetail(String roomId, String teacherId){
-        return roomMapper.selectTeacherRoomDetail(roomId,teacherId).setRoom(getTeacherRoom(roomId));
+    public TeacherRoomDetailVO getTeacherRoomDetail(String roomId){
+        TeacherRoomDetailVO teacherRoomDetailVO = new TeacherRoomDetailVO();
+        teacherRoomDetailVO.setPapers(teacherPaperMapper.listTeacherPaperByRoomId(roomId));
+        teacherRoomDetailVO.setRoom(roomMapper.selectTeacherRoom(roomId));
+        return teacherRoomDetailVO;
     }
 
     public List<HistoryRoomVO> getHistoryRooms(String studentId){

@@ -29,7 +29,7 @@ public class StudentPaper implements Serializable {
 
     private String studentId;
 
-    private String paperId;
+    private String teacherPaperId;
 
     private Double obtainScore;
 

@@ -13,6 +13,7 @@ import com.myexam.po.StudentPaper;
 import com.myexam.vo.StudentPaperVO;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.annotation.Resource;
 
@@ -36,7 +37,7 @@ public class PaperService {
         List<Object> studentAnswers = paperResultDTO.getAnswers();
         // 获取原题库题目（含答案和分数）
         MetaPaper metaPaper = metaPaperMapper.selectOne(new QueryWrapper<MetaPaper>().eq("id",paperId));
-        List<Question> questions = JSON.parseArray(metaPaper.getQuestions(),Question.class);
+        List<Question> questions = metaPaper.getQuestions();
         // 用于落库的json对象
         List<StudentAnswer> studentAnswerList = new ArrayList<>();
         // 比较答案，计算分数，更新对错标识
@@ -69,6 +70,20 @@ public class PaperService {
         return metaPaperMapper.selectList(new QueryWrapper<MetaPaper>().eq("teacher_id",teacherId));
     }
 
+    public MetaPaper getMetaPaper(String paperId){
+        return metaPaperMapper.selectById(paperId);
+    }
+
+    public void deleteMetaPaper(String paperId){
+        metaPaperMapper.deleteById(paperId);
+    }
+    public void updateMetaPaper(MetaPaper metaPaper){
+        metaPaperMapper.updateById(metaPaper);
+    }
+
+    public int createMetaPaper(MetaPaper metaPaper){
+        return metaPaperMapper.insert(metaPaper);
+    }
 
     public List<StudentPaperVO> getDonePapers(String studentId){
         return studentPaperMapper.selectStudentPaperList(studentId,2,true);

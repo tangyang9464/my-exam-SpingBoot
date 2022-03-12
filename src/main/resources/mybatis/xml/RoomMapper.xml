@@ -25,20 +25,6 @@
     </resultMap>
 
 
-    <select id="selectTeacherRoomDetail" resultMap="TeacherRoomDetailMap">
-        select
-            room.id,
-            course,
-            school_class,
-            paper_id
-        from room,teacher_paper
-        where room.id = teacher_paper.room_id and room.id=#{roomId} and room.teacher_id = #{teacherId}
-    </select>
-    <resultMap id="TeacherRoomDetailMap" type="com.myexam.vo.TeacherRoomDetailVO">
-        <association property="papers" column="paper_id"
-                     select="com.myexam.mapper.TeacherPaperMapper.selectTeacherPaper"/>
-    </resultMap>
-
     <select id="selectStudentRoomList" resultMap="StudentRoomMap">
         select
             room.id as id,
@@ -67,6 +53,17 @@
         <result property="teacherName" column="teacher_name"/>
         <result property="teacherAvatar" column="teacher_avatar"/>
     </resultMap>
+
+    <select id="selectTeacherRoom" resultType="com.myexam.vo.TeacherRoomVO">
+        select
+            room.id as id,
+            course,
+            school_class,
+            count(room_student_merge.id) as student_number
+        from room left join room_student_merge
+        on room.id = room_student_merge.room_id and room.id=#{roomId}
+        group by room.id
+    </select>
 
     <select id="selectStudentHistoryRoomList" resultType="com.myexam.vo.HistoryRoomVO">
         select

@@ -13,7 +13,7 @@ import javax.annotation.Resource;
 import java.util.List;
 
 @RestController
-@RequestMapping("/studentPaper")
+@RequestMapping("/paper")
 public class PaperController {
     @Resource
     PaperService paperService;
@@ -37,5 +37,28 @@ public class PaperController {
     @RequestMapping("/metaPapers")
     public ResponseEntity<List<MetaPaper>> getMetaPapers(String teacherId){
         return ResponseEntity.success(paperService.getMetaPapers(teacherId));
+    }
+
+    @RequestMapping("/createMetaPaper")
+    public ResponseEntity createMetaPaper(@RequestBody MetaPaper metaPaper){
+        paperService.createMetaPaper(metaPaper);
+        return ResponseEntity.success();
+    }
+
+    @RequestMapping("/getMetaPaper")
+    public ResponseEntity<MetaPaper> getMetaPaperDetail(String paperId){
+        return ResponseEntity.success(paperService.getMetaPaper(paperId));
+    }
+
+    @RequestMapping("/deleteMetaPaper")
+    public ResponseEntity deleteMetaPaper(String paperId){
+        paperService.deleteMetaPaper(paperId);
+        return ResponseEntity.success();
+    }
+
+    @RequestMapping("/updateMetaPaper")
+    public ResponseEntity<MetaPaper> updateMetaPaper(@RequestBody MetaPaper metaPaper){
+        paperService.updateMetaPaper(metaPaper);
+        return ResponseEntity.success();
     }
 }

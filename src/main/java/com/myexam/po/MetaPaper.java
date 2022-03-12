@@ -1,11 +1,12 @@
 package com.myexam.po;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.io.Serializable;
+import java.util.List;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.extension.handlers.FastjsonTypeHandler;
+import com.myexam.json.Question;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -19,6 +20,7 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
+@TableName(autoResultMap = true)
 public class MetaPaper implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -34,12 +36,12 @@ public class MetaPaper implements Serializable {
 
     private Integer questionNumber;
 
-    private Long totalTime;
 
-    private LocalDateTime deadline;
+    @TableField(typeHandler = FastjsonTypeHandler.class)
+    private List<Question> questions;
 
-    private String questions;
-
+    @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;
+    @TableField(fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;
 }

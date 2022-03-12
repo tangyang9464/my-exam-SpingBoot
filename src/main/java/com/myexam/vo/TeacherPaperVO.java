@@ -15,7 +15,6 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@TableName(autoResultMap = true)
 public class TeacherPaperVO implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -32,6 +31,5 @@ public class TeacherPaperVO implements Serializable {
     private Integer undoneNumber;
     private Integer doneNumber;
 
-    @TableField(typeHandler = JacksonTypeHandler.class)
     private List<Question> questions;
 }

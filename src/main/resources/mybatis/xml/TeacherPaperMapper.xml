@@ -25,4 +25,30 @@
         <result property="doneNumber" column="done_number"/>
         <result property="questions" column="questions" jdbcType="VARCHAR"  typeHandler="com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler" />
     </resultMap>
+
+    <select id="listTeacherPaperByRoomId" resultMap="listTeacherPaperMap">
+        select paper_id,
+               paper_name,
+               total_time,
+               total_score,
+               questions,
+               question_number,
+               undone_number,
+               done_number,
+               deadline
+        from (room left join teacher_paper on room.id = teacher_paper.room_id and room.id = #{roomId})
+            INNER JOIN meta_paper
+            on paper_id = meta_paper.id
+    </select>
+    <resultMap id="listTeacherPaperMap" type="com.myexam.vo.TeacherPaperVO">
+        <result property="id" column="paper_id"/>
+        <result property="paperName" column="paper_name" />
+        <result property="totalTime" column="total_time" />
+        <result property="totalScore" column="total_score" />
+        <result property="questionNumber" column="question_number" />
+        <result property="deadline" column="deadline" />
+        <result property="undoneNumber" column="undone_number"/>
+        <result property="doneNumber" column="done_number"/>
+        <result property="questions" column="questions" jdbcType="VARCHAR"  typeHandler="com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler" />
+    </resultMap>
 </mapper>

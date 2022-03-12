@@ -72,8 +72,8 @@ public class RoomController {
         return ResponseEntity.success(roomDetailVO);
     }
     @RequestMapping("/teacherDetail")
-    public ResponseEntity<TeacherRoomDetailVO> getTeacherRoomDetail(String roomId, String teacherId){
-        TeacherRoomDetailVO roomDetailVO = roomService.getTeacherRoomDetail(roomId,teacherId);
+    public ResponseEntity<TeacherRoomDetailVO> getTeacherRoomDetail(String roomId){
+        TeacherRoomDetailVO roomDetailVO = roomService.getTeacherRoomDetail(roomId);
         return ResponseEntity.success(roomDetailVO);
     }
 }

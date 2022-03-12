@@ -1,9 +1,8 @@
 package com.myexam;
 
-import com.myexam.mapper.RoomMapper;
-import com.myexam.mapper.StudentPaperMapper;
-import com.myexam.vo.StudentPaperVO;
-import com.myexam.vo.StudentRoomDetailVO;
+import com.myexam.mapper.MetaPaperMapper;
+import com.myexam.mapper.TeacherPaperMapper;
+import com.myexam.po.MetaPaper;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -13,11 +12,14 @@ import javax.annotation.Resource;
 class MyExamApplicationTests {
 
     @Resource
-    RoomMapper roomMapper;
+    TeacherPaperMapper teacherPaperMapper;
+    @Resource
+    MetaPaperMapper metaPaperMapper;
 
     @Test
     void contextLoads() {
-            System.out.println();
+        MetaPaper metaPaper = metaPaperMapper.selectById("1501830751929270273");
+        System.out.println();
     }
 
 }

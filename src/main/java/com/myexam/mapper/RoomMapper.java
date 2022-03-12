@@ -2,10 +2,7 @@ package com.myexam.mapper;
 
 import com.myexam.po.Room;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.myexam.vo.HistoryRoomVO;
-import com.myexam.vo.StudentRoomDetailVO;
-import com.myexam.vo.StudentRoomVO;
-import com.myexam.vo.TeacherRoomDetailVO;
+import com.myexam.vo.*;
 
 import java.util.List;
 
@@ -19,8 +16,8 @@ import java.util.List;
  */
 public interface RoomMapper extends BaseMapper<Room> {
     StudentRoomDetailVO selectStudentRoomDetail (String roomId,String studentId);
-    TeacherRoomDetailVO selectTeacherRoomDetail(String roomId,String teacherId);
     List<StudentRoomVO> selectStudentRoomList (String studentId,Integer archiveStatus);
     List<HistoryRoomVO> selectStudentHistoryRoomList (String studentId);
     StudentRoomVO selectStudentRoom (String roomId);
+    TeacherRoomVO selectTeacherRoom (String roomId);
 }

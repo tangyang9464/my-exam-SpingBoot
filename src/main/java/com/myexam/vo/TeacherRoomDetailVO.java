@@ -17,5 +17,5 @@ public class TeacherRoomDetailVO implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private TeacherRoomVO room;
-    private List<TeacherPaper> papers;
+    private List<TeacherPaperVO> papers;
 }

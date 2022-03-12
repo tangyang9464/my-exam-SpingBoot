@@ -3,6 +3,8 @@ package com.myexam.po;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
+import java.time.LocalDateTime;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -35,4 +37,11 @@ public class TeacherPaper implements Serializable {
     private Integer undoneNumber;
 
     private Integer doneNumber;
+
+//    分钟
+    private Integer totalTime;
+
+    private LocalDateTime deadline;
+    private String publishName;
+    private LocalDateTime start_time;
 }
