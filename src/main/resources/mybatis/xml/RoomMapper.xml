@@ -3,27 +3,26 @@
 <mapper namespace="com.myexam.mapper.RoomMapper">
     <select id="selectStudentRoomDetail" resultMap="StudentRoomDetailMap">
         select
-               room.id,
-               course,
-               school_class,
-               username as teacher_name,
-               avatar as teacher_avatar,
-               paper_id
-        from room,user,student_paper
-        where room.id = student_paper.room_id and room.teacher_id = user.id and room.id=#{roomId} and student_id = #{studentId}
+            room.id as roomId,
+            course,
+            school_class,
+            username as teacher_name,
+            avatar as teacher_avatar,
+            student_paper.*
+        from (room INNER JOIN user on room.teacher_id = user.id and room.id=#{roomId})
+                 LEFT JOIN student_paper on student_paper.student_id = #{studentId} and student_paper.room_id = room.id;
     </select>
     <resultMap id="StudentRoomDetailMap" type="com.myexam.vo.StudentRoomDetailVO">
+        <id property="id" column="roomId"/>
         <association property="room" javaType="com.myexam.vo.StudentRoomVO">
-            <id property="id" column="id"/>
+            <id property="id" column="roomId"/>
             <result property="course" column="course"/>
             <result property="schoolClass" column="school_class"/>
             <result property="teacherName" column="teacher_name"/>
             <result property="teacherAvatar" column="teacher_avatar"/>
         </association>
-        <association property="papers" column="paper_id"
-                     select="com.myexam.mapper.StudentPaperMapper.selectStudentPaper"/>
+        <collection property="papers" ofType="com.myexam.vo.StudentPaperVO" resultMap="com.myexam.mapper.StudentPaperMapper.studentRecordVOMap" />
     </resultMap>
-
 
     <select id="selectStudentRoomList" resultMap="StudentRoomMap">
         select
@@ -61,8 +60,8 @@
             school_class,
             count(room_student_merge.id) as student_number
         from room left join room_student_merge
-        on room.id = room_student_merge.room_id and room.id=#{roomId}
-        group by room.id
+        on room.id = room_student_merge.room_id
+        where room.id=#{roomId}
     </select>
 
     <select id="selectStudentHistoryRoomList" resultType="com.myexam.vo.HistoryRoomVO">

@@ -3,6 +3,7 @@ package com.myexam.mapper;
 import com.myexam.po.TeacherPaper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.myexam.vo.TeacherPaperVO;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -17,4 +18,5 @@ import java.util.List;
 public interface TeacherPaperMapper extends BaseMapper<TeacherPaper> {
     TeacherPaperVO selectTeacherPaper(String paperId);
     List<TeacherPaperVO> listTeacherPaperByRoomId (String roomId);
+    void insertBatch(List<TeacherPaper> teacherPapers);
 }

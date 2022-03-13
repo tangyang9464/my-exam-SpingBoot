@@ -24,12 +24,14 @@ public class StudentPaper implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @TableId(value = "id", type = IdType.AUTO)
-    private Integer id;
+    @TableId(value = "id", type = IdType.ASSIGN_ID)
+    private String id;
 
     private String studentId;
 
     private String teacherPaperId;
+    private String metaPaperId;
+    private String roomId;
 
     private Double obtainScore;
 
@@ -46,4 +48,13 @@ public class StudentPaper implements Serializable {
     private Integer finishStatus;
 
     private String answers;
+
+    private LocalDateTime actualStartTime;
+
+    private Long totalTime;
+    private Double totalScore;
+
+    private LocalDateTime deadline;
+    private String publishName;
+    private LocalDateTime allowedStartTime;
 }

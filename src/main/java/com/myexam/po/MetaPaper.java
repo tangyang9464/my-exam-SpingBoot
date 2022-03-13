@@ -5,8 +5,8 @@ import java.io.Serializable;
 import java.util.List;
 
 import com.baomidou.mybatisplus.annotation.*;
-import com.baomidou.mybatisplus.extension.handlers.FastjsonTypeHandler;
 import com.myexam.json.Question;
+import com.myexam.json.handler.QuestionListTypeHandler;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -37,7 +37,7 @@ public class MetaPaper implements Serializable {
     private Integer questionNumber;
 
 
-    @TableField(typeHandler = FastjsonTypeHandler.class)
+    @TableField(typeHandler = QuestionListTypeHandler.class)
     private List<Question> questions;
 
     @TableField(fill = FieldFill.INSERT)

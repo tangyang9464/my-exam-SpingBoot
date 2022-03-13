@@ -17,4 +17,5 @@ import java.util.List;
 public interface StudentPaperMapper extends BaseMapper<StudentPaper> {
     StudentPaperVO selectStudentPaper(String paperId);
     List<StudentPaperVO> selectStudentPaperList(String studentId, Integer finishStatus,boolean condition);
+    void insertBatch(List<StudentPaper> studentPapers);
 }

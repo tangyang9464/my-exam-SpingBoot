@@ -2,8 +2,10 @@ package com.myexam.vo;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import com.myexam.json.Question;
+import com.myexam.json.StudentAnswer;
+import com.myexam.json.handler.QuestionListTypeHandler;
+import com.myexam.json.handler.StudentAnswerTypeHandler;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,10 +22,14 @@ public class StudentPaperVO implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private String id;
-    private String paperName;
-    private long totalTime;
+    private String teacherPaperId;
+    private String metaPaperId;
+    private String publishName;
+    private Long totalTime;
     private Double totalScore;
     private Integer questionNumber;
+    private LocalDateTime allowedStartTime;
+    private LocalDateTime actualStartTime;
     private LocalDateTime deadline;
     private Double obtainScore;
     private LocalDateTime submitTime;
@@ -32,7 +38,8 @@ public class StudentPaperVO implements Serializable {
      */
     private Integer finishStatus;
 
-    @TableField(typeHandler = JacksonTypeHandler.class)
+    @TableField(typeHandler = QuestionListTypeHandler.class)
     private List<Question> questions;
-    private List<AnswerVO> studentAnswers;
+    @TableField(typeHandler = StudentAnswerTypeHandler.class)
+    private List<StudentAnswer> studentAnswers;
 }

@@ -1,8 +1,10 @@
 package com.myexam.controller;
 
 import com.myexam.DTO.PaperResultDTO;
+import com.myexam.DTO.PublishInfoDTO;
 import com.myexam.entity.ResponseEntity;
 import com.myexam.po.MetaPaper;
+import com.myexam.po.TeacherPaper;
 import com.myexam.service.PaperService;
 import com.myexam.vo.StudentPaperVO;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,6 +23,12 @@ public class PaperController {
     @RequestMapping("/detail")
     public ResponseEntity<StudentPaperVO> getStudentPaperDetail(String paperId){
         return ResponseEntity.success(paperService.getPaperDetail(paperId));
+    }
+
+    @RequestMapping("/startAnswering")
+    public ResponseEntity startAnswering(String studentId, String paperId){
+        paperService.startAnswering(studentId,paperId);
+        return ResponseEntity.success();
     }
 
     @RequestMapping("/submit")
@@ -59,6 +67,12 @@ public class PaperController {
     @RequestMapping("/updateMetaPaper")
     public ResponseEntity<MetaPaper> updateMetaPaper(@RequestBody MetaPaper metaPaper){
         paperService.updateMetaPaper(metaPaper);
+        return ResponseEntity.success();
+    }
+
+    @RequestMapping("/publishPaper")
+    public ResponseEntity publishPaper(@RequestBody PublishInfoDTO publishInfo){
+        paperService.publishPaper(publishInfo);
         return ResponseEntity.success();
     }
 }

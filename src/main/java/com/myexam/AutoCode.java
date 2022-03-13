@@ -41,7 +41,7 @@ public class AutoCode {
         gc.setAuthor("ty"); //设置作者名称,也就是自己
         gc.setOpen(false);
         gc.setServiceName("%sService");
-        gc.setFileOverride(true); //设置生成文件是否覆盖原文件
+        gc.setFileOverride(false); //设置生成文件是否覆盖原文件
         //gc.setSwagger2(true); //实体属性 Swagger2 注解
         mpg.setGlobalConfig(gc);
 
@@ -63,10 +63,12 @@ public class AutoCode {
         TemplateConfig templateConfig = new TemplateConfig();
 
         //控制 不生成 controller  空字符串就行
+        templateConfig.setEntity("");
+        templateConfig.setMapper("");
         templateConfig.setController("");
-        templateConfig.setService("");
-        templateConfig.setServiceImpl("");
-//        templateConfig.setXml("");
+//        templateConfig.setService("");
+//        templateConfig.setServiceImpl("");
+        templateConfig.setXml("");
         //删除上述即可生成service
         mpg.setTemplate(templateConfig);
         mpg.setTemplateEngine(new VelocityTemplateEngine());

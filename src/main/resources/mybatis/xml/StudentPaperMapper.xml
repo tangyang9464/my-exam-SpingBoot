@@ -2,48 +2,15 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.myexam.mapper.StudentPaperMapper">
     <select id="selectStudentPaper" resultMap="studentRecordVOMap">
-        select paper_id,
-               paper_name,
-               total_time,
-               total_score,
-               finish_status,
-               questions,
-               question_number,
-               deadline,
-               answers,
-               submit_time,
-               obtain_score
+        select a.*,b.*
         from student_paper a,meta_paper b
-        where a.paper_id = b.id and paper_id = #{paperId}
+        where a.id = #{paperId} and a.meta_paper_id = b.id
     </select>
-    <resultMap id="studentRecordVOMap" type="com.myexam.vo.StudentPaperVO">
-        <result property="submitTime" column="submit_time"/>
-        <result property="id" column="paper_id"/>
-        <result property="obtainScore" column="obtain_score" />
-        <result property="paperName" column="paper_name" />
-        <result property="totalTime" column="total_time" />
-        <result property="totalScore" column="total_score" />
-        <result property="questionNumber" column="question_number" />
-        <result property="deadline" column="deadline" />
-        <result property="finishStatus" column="finish_status" />
-        <result property="studentAnswers" column="answers" jdbcType="VARCHAR"  typeHandler="com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler" />
-        <result property="questions" column="questions" jdbcType="VARCHAR"  typeHandler="com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler" />
-    </resultMap>
 
     <select id="selectStudentPaperList" resultMap="studentRecordVOMap">
-        select  paper_id,
-                paper_name,
-                total_time,
-                total_score,
-                finish_status,
-                questions,
-                question_number,
-                deadline,
-                answers,
-                submit_time,
-                obtain_score
+        select a.*,b.*
         from student_paper a,meta_paper b
-        where a.paper_id = b.id and student_id = #{studentId}
+        where a.student_id = #{studentId} and a.meta_paper_id = b.id
         <if test="finishStatus != null">
             <choose>
                 <when test="condition">
@@ -55,4 +22,20 @@
             </choose>
         </if>
     </select>
+
+    <resultMap id="studentRecordVOMap" type="com.myexam.vo.StudentPaperVO" autoMapping="true">
+        <result property="id" column="id"/>
+        <result property="studentAnswers" column="answers" jdbcType="VARCHAR"  typeHandler="com.myexam.json.handler.StudentAnswerTypeHandler" />
+        <result property="questions" column="questions" jdbcType="VARCHAR"  typeHandler="com.myexam.json.handler.QuestionListTypeHandler" />
+    </resultMap>
+
+
+    <insert id="insertBatch">
+        INSERT INTO student_paper
+        (student_id, teacher_paper_id)
+        VALUES
+        <foreach collection ="studentPapers" item="studentPaper" separator =",">
+            (#{studentPaper.studentId}, #{studentPaper.teacherPaperId})
+        </foreach >
+    </insert>
 </mapper>

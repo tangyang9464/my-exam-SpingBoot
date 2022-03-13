@@ -4,14 +4,18 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 public class PublishInfoDTO implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private String roomId;
+    private String teacherId;
+    private String metaPaperId;
+    private List<String> roomIds;
     private String publishName;
-    private Integer total_time;
-    private LocalDateTime startTime;
+    private Long totalTime;
+    private LocalDateTime allowedStartTime;
     private LocalDateTime deadline;
+    private Integer undoneNumber;
 }

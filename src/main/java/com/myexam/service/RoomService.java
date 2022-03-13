@@ -25,6 +25,8 @@ public class RoomService {
     RoomMapper roomMapper;
     @Resource
     TeacherPaperMapper teacherPaperMapper;
+    @Resource
+    PaperService paperService;
 
     public boolean isExist(String roomId){
         return roomMapper.selectById(roomId) != null;
