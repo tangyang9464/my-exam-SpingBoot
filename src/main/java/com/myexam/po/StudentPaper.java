@@ -47,7 +47,7 @@ public class StudentPaper implements Serializable {
      */
     private Integer finishStatus;
 
-    private String answers;
+    private String studentAnswers;
 
     private LocalDateTime actualStartTime;
 

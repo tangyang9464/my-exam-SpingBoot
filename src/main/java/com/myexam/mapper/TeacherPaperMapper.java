@@ -18,5 +18,4 @@ import java.util.List;
 public interface TeacherPaperMapper extends BaseMapper<TeacherPaper> {
     TeacherPaperVO selectTeacherPaper(String paperId);
     List<TeacherPaperVO> listTeacherPaperByRoomId (String roomId);
-    void insertBatch(List<TeacherPaper> teacherPapers);
 }

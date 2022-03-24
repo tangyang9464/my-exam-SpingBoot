@@ -25,7 +25,7 @@
 
     <resultMap id="studentRecordVOMap" type="com.myexam.vo.StudentPaperVO" autoMapping="true">
         <result property="id" column="id"/>
-        <result property="studentAnswers" column="answers" jdbcType="VARCHAR"  typeHandler="com.myexam.json.handler.StudentAnswerTypeHandler" />
+        <result property="studentAnswers" column="student_answers" jdbcType="VARCHAR"  typeHandler="com.myexam.json.handler.StudentAnswerTypeHandler" />
         <result property="questions" column="questions" jdbcType="VARCHAR"  typeHandler="com.myexam.json.handler.QuestionListTypeHandler" />
     </resultMap>
 

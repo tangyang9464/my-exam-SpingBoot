@@ -28,6 +28,10 @@ public class StudentPaperVO implements Serializable {
     private Long totalTime;
     private Double totalScore;
     private Integer questionNumber;
+    /**
+     * 题目正确数量
+     */
+    private Integer correctNumber;
     private LocalDateTime allowedStartTime;
     private LocalDateTime actualStartTime;
     private LocalDateTime deadline;

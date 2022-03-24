@@ -63,11 +63,11 @@ public class AutoCode {
         TemplateConfig templateConfig = new TemplateConfig();
 
         //控制 不生成 controller  空字符串就行
-        templateConfig.setEntity("");
+//        templateConfig.setEntity("");
         templateConfig.setMapper("");
         templateConfig.setController("");
-//        templateConfig.setService("");
-//        templateConfig.setServiceImpl("");
+        templateConfig.setService("");
+        templateConfig.setServiceImpl("");
         templateConfig.setXml("");
         //删除上述即可生成service
         mpg.setTemplate(templateConfig);

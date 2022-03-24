@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.myexam.mapper.RoomMapper">
+    <select id="selectStudentRoomDetail" resultMap="StudentRoomDetailMap">
+        select
+            room.id as roomId,
+            course,
+            school_class,
+            username as teacher_name,
+            avatar as teacher_avatar,
+            student_paper.*,
+            meta_paper.*
+        from ((room INNER JOIN user on room.teacher_id = user.id and room.id=#{roomId})
+                 LEFT JOIN student_paper on student_paper.student_id = #{studentId} and student_paper.room_id = room.id)
+            inner join meta_paper on student_paper.meta_paper_id = meta_paper.id
+    </select>
+    <resultMap id="StudentRoomDetailMap" type="com.myexam.vo.StudentRoomDetailVO">
+        <id property="id" column="roomId"/>
+        <association property="room" javaType="com.myexam.vo.StudentRoomVO">
+            <id property="id" column="roomId"/>
+            <result property="course" column="course"/>
+            <result property="schoolClass" column="school_class"/>
+            <result property="teacherName" column="teacher_name"/>
+            <result property="teacherAvatar" column="teacher_avatar"/>
+        </association>
+        <collection property="papers" ofType="com.myexam.vo.StudentPaperVO" resultMap="com.myexam.mapper.StudentPaperMapper.studentRecordVOMap" />
+    </resultMap>
+
+    <select id="selectStudentRoomList" resultMap="StudentRoomMap">
+        select
+            room.id as id,
+            course,
+            school_class,
+            username as teacher_name,
+            avatar as teacher_avatar
+        from room,room_student_merge,user
+        where room.teacher_id = user.id and room.id = room_id and student_id=#{studentId} and archive_status = #{archiveStatus}
+    </select>
+
+    <select id="selectStudentRoom" resultMap="StudentRoomMap">
+        select
+            room.id as id,
+            course,
+            school_class,
+            username as teacher_name,
+            avatar as teacher_avatar
+        from room,user
+        where room.teacher_id = user.id and room.id=#{roomId}
+    </select>
+    <resultMap id="StudentRoomMap" type="com.myexam.vo.StudentRoomVO">
+        <id property="id" column="id"/>
+        <result property="course" column="course"/>
+        <result property="schoolClass" column="school_class"/>
+        <result property="teacherName" column="teacher_name"/>
+        <result property="teacherAvatar" column="teacher_avatar"/>
+    </resultMap>
+
+    <select id="selectTeacherRoom" resultType="com.myexam.vo.TeacherRoomVO">
+        select
+            room.id as id,
+            course,
+            school_class,
+            count(room_student_merge.id) as student_number
+        from room left join room_student_merge
+        on room.id = room_student_merge.room_id
+        where room.id=#{roomId}
+    </select>
+
+    <select id="selectStudentHistoryRoomList" resultType="com.myexam.vo.HistoryRoomVO">
+        select
+            room.id as id,
+            course,
+            school_class
+        from room,room_student_merge
+        where room.id = room_id and student_id=#{studentId} and archive_status = 1
+    </select>
+</mapper>

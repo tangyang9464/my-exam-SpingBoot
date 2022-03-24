@@ -37,6 +37,12 @@ public class PaperController {
         return ResponseEntity.success();
     }
 
+    @RequestMapping("/tempSave")
+    public ResponseEntity tempSave(@RequestBody PaperResultDTO paperResultDTO){
+        paperService.tempSave(paperResultDTO);
+        return ResponseEntity.success();
+    }
+
     @RequestMapping("/undonePapers")
     public ResponseEntity<List<StudentPaperVO>> getUndonePapers(String studentId){
         return ResponseEntity.success(paperService.getUnDonePapers(studentId));

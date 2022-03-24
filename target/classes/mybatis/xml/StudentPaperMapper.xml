@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.myexam.mapper.StudentPaperMapper">
+    <select id="selectStudentPaper" resultMap="studentRecordVOMap">
+        select a.*,b.*
+        from student_paper a,meta_paper b
+        where a.id = #{paperId} and a.meta_paper_id = b.id
+    </select>
+
+    <select id="selectStudentPaperList" resultMap="studentRecordVOMap">
+        select a.*,b.*
+        from student_paper a,meta_paper b
+        where a.student_id = #{studentId} and a.meta_paper_id = b.id
+        <if test="finishStatus != null">
+            <choose>
+                <when test="condition">
+                    and finish_status = #{finishStatus}
+                </when>
+                <otherwise>
+                    and finish_status != #{finishStatus}
+                </otherwise>
+            </choose>
+        </if>
+    </select>
+
+    <resultMap id="studentRecordVOMap" type="com.myexam.vo.StudentPaperVO" autoMapping="true">
+        <result property="id" column="id"/>
+        <result property="studentAnswers" column="student_answers" jdbcType="VARCHAR"  typeHandler="com.myexam.json.handler.StudentAnswerTypeHandler" />
+        <result property="questions" column="questions" jdbcType="VARCHAR"  typeHandler="com.myexam.json.handler.QuestionListTypeHandler" />
+    </resultMap>
+
+
+    <insert id="insertBatch">
+        INSERT INTO student_paper
+        (student_id, teacher_paper_id)
+        VALUES
+        <foreach collection ="studentPapers" item="studentPaper" separator =",">
+            (#{studentPaper.studentId}, #{studentPaper.teacherPaperId})
+        </foreach >
+    </insert>
+</mapper>

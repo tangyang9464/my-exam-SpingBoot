@@ -47,6 +47,18 @@ public class PaperService {
     @Resource
     RoomStudentMergeMapper roomStudentMergeMapper;
 
+    public void tempSave (PaperResultDTO paperResultDTO){
+        String studentPaperId = paperResultDTO.getStudentPaperId();
+        List<Object> studentAnswers = paperResultDTO.getAnswers();
+        // 用于落库的json对象
+        List<StudentAnswer> studentAnswerList = studentAnswers.stream().map((a) -> new StudentAnswer(0,a)).collect(Collectors.toList());
+        // 更新学生端数据
+        StudentPaper studentPaper = new StudentPaper()
+                .setId(studentPaperId)
+                .setStudentAnswers(JSON.toJSONString(studentAnswerList));
+        studentPaperMapper.updateById(studentPaper);
+    }
+
     @Transient
     public void submit(PaperResultDTO paperResultDTO){
         double obtainScore = 0;
@@ -83,7 +95,7 @@ public class PaperService {
                 .setCorrectNumber(correctNumber)
                 .setSubmitTime(LocalDateTime.now())
                 .setFinishStatus(2)
-                .setAnswers(JSON.toJSONString(studentAnswerList));
+                .setStudentAnswers(JSON.toJSONString(studentAnswerList));
         studentPaperMapper.updateById(studentPaper);
         // 更新教师端数据
         teacherPaperMapper.update(null,new UpdateWrapper<TeacherPaper>()
