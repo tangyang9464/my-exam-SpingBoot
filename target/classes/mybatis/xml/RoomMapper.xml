@@ -11,8 +11,8 @@
             student_paper.*,
             meta_paper.*
         from ((room INNER JOIN user on room.teacher_id = user.id and room.id=#{roomId})
-                 LEFT JOIN student_paper on student_paper.student_id = #{studentId} and student_paper.room_id = room.id)
-            inner join meta_paper on student_paper.meta_paper_id = meta_paper.id
+                 LEFT JOIN (student_paper inner join meta_paper on student_paper.meta_paper_id = meta_paper.id)
+                     on student_paper.student_id = #{studentId} and student_paper.room_id = room.id)
     </select>
     <resultMap id="StudentRoomDetailMap" type="com.myexam.vo.StudentRoomDetailVO">
         <id property="id" column="roomId"/>
