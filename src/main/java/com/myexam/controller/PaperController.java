@@ -7,6 +7,7 @@ import com.myexam.po.MetaPaper;
 import com.myexam.po.TeacherPaper;
 import com.myexam.service.PaperService;
 import com.myexam.vo.StudentPaperVO;
+import com.myexam.vo.TeacherPaperVO;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -51,6 +52,11 @@ public class PaperController {
     @RequestMapping("/metaPapers")
     public ResponseEntity<List<MetaPaper>> getMetaPapers(String teacherId){
         return ResponseEntity.success(paperService.getMetaPapers(teacherId));
+    }
+
+    @RequestMapping("/getTeacherPaper")
+    public ResponseEntity<TeacherPaperVO> getTeacherPaper(String teacherPaperId){
+        return ResponseEntity.success(paperService.getTeacherPaper(teacherPaperId));
     }
 
     @RequestMapping("/createMetaPaper")

@@ -16,6 +16,6 @@ import java.util.List;
  * @since 2022-03-05
  */
 public interface TeacherPaperMapper extends BaseMapper<TeacherPaper> {
-    TeacherPaperVO selectTeacherPaper(String paperId);
+    TeacherPaperVO selectTeacherPaper(String teacherPaperId);
     List<TeacherPaperVO> listTeacherPaperByRoomId (String roomId);
 }

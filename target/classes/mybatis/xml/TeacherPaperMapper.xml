@@ -2,53 +2,35 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.myexam.mapper.TeacherPaperMapper">
     <select id="selectTeacherPaper" resultMap="TeacherRecordVOMap">
-        select meta_paper_id,
-               paper_name,
-               total_time,
-               total_score,
-               questions,
-               question_number,
-               undone_number,
-               done_number,
-               deadline
+        select a.*,b.*
         from teacher_paper a,meta_paper b
-        where a.meta_paper_id = b.id and meta_paper_id = #{paperId}
+        where a.meta_paper_id = b.id and a.id = #{teacherPaperId}
     </select>
     <resultMap id="TeacherRecordVOMap" type="com.myexam.vo.TeacherPaperVO">
-        <result property="id" column="paper_id"/>
-        <result property="paperName" column="paper_name" />
-        <result property="totalTime" column="total_time" />
-        <result property="totalScore" column="total_score" />
-        <result property="questionNumber" column="question_number" />
-        <result property="deadline" column="deadline" />
-        <result property="undoneNumber" column="undone_number"/>
-        <result property="doneNumber" column="done_number"/>
+        <result property="id" column="id"/>
         <result property="questions" column="questions" jdbcType="VARCHAR"  typeHandler="com.myexam.json.handler.QuestionListTypeHandler" />
+        <result property="studentOptionDistribution" column="student_option_distribution" jdbcType="VARBINARY" typeHandler="com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler"/>
     </resultMap>
 
     <select id="listTeacherPaperByRoomId" resultMap="listTeacherPaperMap">
-        select meta_paper_id,
-               paper_name,
+        select teacher_paper.id as id,
+               publish_name,
                total_time,
                total_score,
-               questions,
                question_number,
+               deadline,
                undone_number,
                done_number,
-               deadline
+               all_score,
+               correct_question_number,
+               student_option_distribution,
+               question_number
         from (room left join teacher_paper on room.id = teacher_paper.room_id and room.id = #{roomId})
             INNER JOIN meta_paper
             on meta_paper_id = meta_paper.id
     </select>
     <resultMap id="listTeacherPaperMap" type="com.myexam.vo.TeacherPaperVO">
-        <result property="id" column="paper_id"/>
-        <result property="paperName" column="paper_name" />
-        <result property="totalTime" column="total_time" />
-        <result property="totalScore" column="total_score" />
-        <result property="questionNumber" column="question_number" />
-        <result property="deadline" column="deadline" />
-        <result property="undoneNumber" column="undone_number"/>
-        <result property="doneNumber" column="done_number"/>
+        <result property="id" column="id"/>
         <result property="questions" column="questions" jdbcType="VARCHAR"  typeHandler="com.myexam.json.handler.QuestionListTypeHandler" />
     </resultMap>
 </mapper>

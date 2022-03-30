@@ -3,6 +3,7 @@ package com.myexam.service;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.myexam.DTO.AnswerDTO;
 import com.myexam.DTO.PaperResultDTO;
 import com.myexam.DTO.PublishInfoDTO;
 import com.myexam.json.Question;
@@ -19,6 +20,7 @@ import com.myexam.po.StudentPaper;
 import com.myexam.po.TeacherPaper;
 import com.myexam.vo.StudentPaperVO;
 
+import com.myexam.vo.TeacherPaperVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -97,10 +99,57 @@ public class PaperService {
                 .setFinishStatus(2)
                 .setStudentAnswers(JSON.toJSONString(studentAnswerList));
         studentPaperMapper.updateById(studentPaper);
+
         // 更新教师端数据
-        teacherPaperMapper.update(null,new UpdateWrapper<TeacherPaper>()
-                .setSql("undone_number = undone_number -1")
-                .setSql("done_number = done_number + 1").eq("id",paperResultDTO.getTeacherPaperId()));
+        TeacherPaper teacherPaper = teacherPaperMapper.selectById(paperResultDTO.getTeacherPaperId());
+        teacherPaper.setAllScore(teacherPaper.getAllScore()+obtainScore);
+        teacherPaper.setCorrectQuestionNumber(teacherPaper.getCorrectQuestionNumber()+correctNumber);
+        // 更新完成人数
+        teacherPaper.setUndoneNumber(teacherPaper.getUndoneNumber()-1);
+        teacherPaper.setDoneNumber(teacherPaper.getDoneNumber()+1);
+        // 更新每题作答分布统计
+        List<List<Integer>> studentOptionDistribution = teacherPaper.getStudentOptionDistribution();
+        if(studentOptionDistribution==null){
+            studentOptionDistribution = new ArrayList<>();
+            for(Question question : questions){
+                Integer[] arr;
+                if(question.getQuestionType()==2){
+                    arr = new Integer[2];
+                } else {
+                    arr = new Integer[question.getOptions().size()];
+                }
+                Arrays.fill(arr,0);
+                studentOptionDistribution.add(new ArrayList<>(Arrays.asList(arr)));
+            }
+        }
+        for(int i=0;i<studentAnswerList.size();i++){
+            List<Integer> curStudentOptionList = studentOptionDistribution.get(i);
+            Object studentAnswer = studentAnswerList.get(i).getStudentAnswer();
+            if(studentAnswer==null){
+                continue;
+            }
+            // 单选
+            if(questions.get(i).getQuestionType() == 0){
+                curStudentOptionList.set((Integer)studentAnswer,curStudentOptionList.get((Integer)studentAnswer)+1);
+            }
+            // 多选
+            else if(questions.get(i).getQuestionType() == 1){
+                List<Integer> list = (List<Integer>) studentAnswer;
+                for(Integer num:list){
+                    curStudentOptionList.set(num,curStudentOptionList.get(num)+1);
+                }
+            }
+            // 判断题
+            else if(questions.get(i).getQuestionType() == 2){
+                if("T".equals(studentAnswer)){
+                    curStudentOptionList.set(0,curStudentOptionList.get(0)+1);
+                } else {
+                    curStudentOptionList.set(1,curStudentOptionList.get(1)+1);
+                }
+            }
+        }
+        teacherPaper.setStudentOptionDistribution(studentOptionDistribution);
+        teacherPaperMapper.updateById(teacherPaper);
     }
 
     public void startAnswering(String studentId,String paperId){
@@ -145,6 +194,10 @@ public class PaperService {
         return metaPaperMapper.selectList(new QueryWrapper<MetaPaper>().eq("teacher_id",teacherId));
     }
 
+    public TeacherPaperVO getTeacherPaper(String teacherPaperId){
+        return teacherPaperMapper.selectTeacherPaper(teacherPaperId);
+    }
+
     public MetaPaper getMetaPaper(String paperId){
         return metaPaperMapper.selectById(paperId);
     }
@@ -159,12 +212,15 @@ public class PaperService {
     @Transactional
     public void publishPaper(PublishInfoDTO publishInfo) {
         List<String> roomIds = publishInfo.getRoomIds();
+        List<Integer> undoneNumbers = publishInfo.getUndoneNumbers();
         // 批量更新教师端数据
         List<TeacherPaper> teacherPapers = new ArrayList<>();
-        for(String roomId:roomIds){
+        for(int i=0;i<roomIds.size();i++){
+            String roomId = roomIds.get(i);
             TeacherPaper teacherPaper = new TeacherPaper();
             BeanUtils.copyProperties(publishInfo,teacherPaper);
             teacherPaper.setRoomId(roomId);
+            teacherPaper.setUndoneNumber(undoneNumbers.get(i));
             teacherPapers.add(teacherPaper);
         }
         mTeacherPaperService.saveBatch(teacherPapers);

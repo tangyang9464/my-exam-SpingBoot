@@ -17,5 +17,5 @@ public class PublishInfoDTO implements Serializable {
     private Long totalTime;
     private LocalDateTime allowedStartTime;
     private LocalDateTime deadline;
-    private Integer undoneNumber;
+    private List<Integer> undoneNumbers;
 }

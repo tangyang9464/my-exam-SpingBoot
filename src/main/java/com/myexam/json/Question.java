@@ -14,7 +14,6 @@ import java.util.List;
 public class Question implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    private String id;
 
     private String stem;
 
@@ -26,7 +25,7 @@ public class Question implements Serializable {
     /**
      * json数组字符串
      */
-    private Object options;
+    private List<String> options;
 
     /**
      * 分值
