@@ -25,6 +25,7 @@ public class StudentPaperVO implements Serializable {
     private String teacherPaperId;
     private String metaPaperId;
     private String publishName;
+    private String teacherName;
     private Long totalTime;
     private Double totalScore;
     private Integer questionNumber;

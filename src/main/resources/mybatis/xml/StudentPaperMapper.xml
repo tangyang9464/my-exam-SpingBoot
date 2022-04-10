@@ -2,15 +2,15 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.myexam.mapper.StudentPaperMapper">
     <select id="selectStudentPaper" resultMap="studentRecordVOMap">
-        select a.*,b.*
-        from student_paper a,meta_paper b
-        where a.id = #{paperId} and a.meta_paper_id = b.id
+        select a.*,b.*,c.display_name as teacherName
+        from student_paper a,meta_paper b,user c
+        where a.id = #{paperId} and a.meta_paper_id = b.id and a.teacher_id = c.id
     </select>
 
     <select id="selectStudentPaperList" resultMap="studentRecordVOMap">
-        select a.*,b.*
-        from student_paper a,meta_paper b
-        where a.student_id = #{studentId} and a.meta_paper_id = b.id
+        select a.*,b.*,c.display_name as teacherName
+        from student_paper a,meta_paper b,user c
+        where a.student_id = #{studentId} and a.meta_paper_id = b.id and a.teacher_id = c.id
         <if test="finishStatus != null">
             <choose>
                 <when test="condition">

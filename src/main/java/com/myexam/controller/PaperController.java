@@ -59,6 +59,11 @@ public class PaperController {
         return ResponseEntity.success(paperService.getTeacherPaper(teacherPaperId));
     }
 
+    @RequestMapping("/getStudentPaper")
+    public ResponseEntity<StudentPaperVO> getStudentPaper(String studentPaperId){
+        return ResponseEntity.success(paperService.getStudentPaper(studentPaperId));
+    }
+
     @RequestMapping("/createMetaPaper")
     public ResponseEntity createMetaPaper(@RequestBody MetaPaper metaPaper){
         paperService.createMetaPaper(metaPaper);

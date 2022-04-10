@@ -30,6 +30,7 @@ public class StudentPaper implements Serializable {
     private String studentId;
 
     private String teacherPaperId;
+    private String teacherId;
     private String metaPaperId;
     private String roomId;
 

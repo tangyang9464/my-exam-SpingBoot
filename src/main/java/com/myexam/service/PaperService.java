@@ -198,6 +198,10 @@ public class PaperService {
         return teacherPaperMapper.selectTeacherPaper(teacherPaperId);
     }
 
+    public StudentPaperVO getStudentPaper(String studentPaperId){
+        return studentPaperMapper.selectStudentPaper(studentPaperId);
+    }
+
     public MetaPaper getMetaPaper(String paperId){
         return metaPaperMapper.selectById(paperId);
     }
@@ -236,6 +240,7 @@ public class PaperService {
             StudentPaper studentPaper = new StudentPaper();
             BeanUtils.copyProperties(publishInfo,studentPaper);
             return studentPaper
+                    .setTeacherId(publishInfo.getTeacherId())
                     .setStudentId(studentId)
                     .setRoomId(obj.getRoomId())
                     .setTeacherPaperId(teacherPaperId);
