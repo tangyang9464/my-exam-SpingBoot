@@ -2,9 +2,15 @@ package com.myexam.po;
 
 import java.math.BigDecimal;
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.time.LocalDateTime;
 import java.io.Serializable;
+import java.util.List;
+
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.myexam.json.StudentAnswer;
+import com.myexam.json.handler.StudentAnswerTypeHandler;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -20,6 +26,7 @@ import lombok.experimental.Accessors;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
+@TableName(autoResultMap = true)
 public class StudentPaper implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -48,12 +55,12 @@ public class StudentPaper implements Serializable {
      */
     private Integer finishStatus;
 
-    private String studentAnswers;
+    @TableField(typeHandler = StudentAnswerTypeHandler.class)
+    private List<StudentAnswer> studentAnswers;
 
     private LocalDateTime actualStartTime;
 
     private Long totalTime;
-    private Double totalScore;
 
     private LocalDateTime deadline;
     private String publishName;

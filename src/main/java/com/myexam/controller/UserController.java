@@ -3,6 +3,7 @@ package com.myexam.controller;
 import com.myexam.entity.ResponseEntity;
 import com.myexam.po.User;
 import com.myexam.service.UserService;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -28,13 +29,11 @@ public class UserController {
         if(user == null){
             return ResponseEntity.fail("用户名不存在");
         }
+        password = password+user.getSalt();
         String verifiedPassword = DigestUtils.md5DigestAsHex(password.getBytes(StandardCharsets.UTF_8));
         if( !user.getPassword().equals(verifiedPassword)){
             return ResponseEntity.fail("密码错误");
         }
-
-        System.out.println(verifiedPassword);
-
         user.setPassword("");
 
         HttpSession httpSession = request.getSession();
@@ -55,8 +54,10 @@ public class UserController {
         if(userService.isRegister(user.getUsername())){
             return ResponseEntity.fail("用户名已被注册");
         }
-        user.setPassword(DigestUtils.md5DigestAsHex(user.getPassword().getBytes(StandardCharsets.UTF_8)));
-        System.out.println(user.getPassword());
+        String salt = RandomStringUtils.randomAlphanumeric(5);
+        String password = user.getPassword()+salt;
+        user.setPassword(DigestUtils.md5DigestAsHex(password.getBytes(StandardCharsets.UTF_8)));
+        user.setSalt(salt);
         userService.register(user);
         return ResponseEntity.success();
     }

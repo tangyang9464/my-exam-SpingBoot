@@ -57,7 +57,7 @@ public class PaperService {
         // 更新学生端数据
         StudentPaper studentPaper = new StudentPaper()
                 .setId(studentPaperId)
-                .setStudentAnswers(JSON.toJSONString(studentAnswerList));
+                .setStudentAnswers(studentAnswerList);
         studentPaperMapper.updateById(studentPaper);
     }
 
@@ -97,7 +97,7 @@ public class PaperService {
                 .setCorrectNumber(correctNumber)
                 .setSubmitTime(LocalDateTime.now())
                 .setFinishStatus(2)
-                .setStudentAnswers(JSON.toJSONString(studentAnswerList));
+                .setStudentAnswers(studentAnswerList);
         studentPaperMapper.updateById(studentPaper);
 
         // 更新教师端数据
@@ -166,27 +166,20 @@ public class PaperService {
     }
 
     /*
-    用于检测未自动交卷
+    用于定时任务自动交卷
      */
-    public void filterAutoCommitPaper(List<StudentPaperVO> list,boolean filter){
-        Iterator<StudentPaperVO> iterator = list.iterator();
-        while (iterator.hasNext()) {
-            StudentPaperVO studentPaperVO = iterator.next();
-            // 计算从开始答题到现在过去的秒数
-            LocalDateTime before = studentPaperVO.getActualStartTime(), after = LocalDateTime.now();
-            long spentTime = Duration.between(before, after).toMillis()/1000;
-            // 如果已经消耗完考试时长，说明需要自动胶卷
-            if(studentPaperVO.getFinishStatus()==1 && spentTime > studentPaperVO.getTotalTime()){
-                PaperResultDTO paperResultDTO = new PaperResultDTO()
-                        .setStudentPaperId(studentPaperVO.getId())
-                        .setTeacherPaperId(studentPaperVO.getTeacherPaperId())
-                        .setMetaPaperId(studentPaperVO.getMetaPaperId())
-                        .setAnswers(studentPaperVO.getStudentAnswers().stream().map(StudentAnswer::getStudentAnswer).collect(Collectors.toList()));
-                this.submit(paperResultDTO);
-                if(filter){
-                    iterator.remove();
-                }
-            }
+    public void autoSubmitPaper(){
+        QueryWrapper<StudentPaper> queryWrapper = new QueryWrapper<>();
+        queryWrapper.apply("date_format (deadline,'%Y-%m-%d %H:%i:%s') >= date_format('" + LocalDateTime.now() + "','%Y-%m-%d %H:%i:%s')")
+                .ne("finish_status",2);
+        List<StudentPaper> list =  studentPaperMapper.selectList(queryWrapper);
+        for(StudentPaper studentPaper:list){
+            PaperResultDTO paperResultDTO = new PaperResultDTO();
+            paperResultDTO.setMetaPaperId(studentPaper.getMetaPaperId());
+            paperResultDTO.setStudentPaperId(studentPaper.getId());
+            paperResultDTO.setTeacherPaperId(studentPaper.getTeacherPaperId());
+            paperResultDTO.setAnswers(studentPaper.getStudentAnswers().stream().map(StudentAnswer::getStudentAnswer).collect(Collectors.toList()));
+            submit(paperResultDTO);
         }
     }
 
