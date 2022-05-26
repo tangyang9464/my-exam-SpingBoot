@@ -34,7 +34,7 @@ public class UserController {
         if( !user.getPassword().equals(verifiedPassword)){
             return ResponseEntity.fail("密码错误");
         }
-        user.setPassword("");
+        user.setPassword(null);
 
         HttpSession httpSession = request.getSession();
         httpSession.setAttribute(user.getId(),user);
@@ -65,6 +65,7 @@ public class UserController {
     @RequestMapping("/saveUserInfo")
     public ResponseEntity saveUserInfo(@RequestBody User user, HttpServletRequest request){
         HttpSession httpSession = request.getSession();
+        user.setPassword(null);
         httpSession.setAttribute(user.getId(),user);
         userService.saveUserInfo(user);
         return ResponseEntity.success();

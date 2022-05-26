@@ -100,57 +100,57 @@ public class PaperService {
                 .setStudentAnswers(studentAnswerList);
         studentPaperMapper.updateById(studentPaper);
 
-        // 更新教师端数据
-        TeacherPaper teacherPaper = teacherPaperMapper.selectById(paperResultDTO.getTeacherPaperId());
-        teacherPaper.setAllScore(teacherPaper.getAllScore()+obtainScore);
-        teacherPaper.setCorrectQuestionNumber(teacherPaper.getCorrectQuestionNumber()+correctNumber);
-        // 更新完成人数
-        teacherPaper.setUndoneNumber(teacherPaper.getUndoneNumber()-1);
-        teacherPaper.setDoneNumber(teacherPaper.getDoneNumber()+1);
-        // 更新每题作答分布统计
-        List<List<Integer>> studentOptionDistribution = teacherPaper.getStudentOptionDistribution();
-        if(studentOptionDistribution==null){
-            studentOptionDistribution = new ArrayList<>();
-            for(Question question : questions){
-                Integer[] arr;
-                if(question.getQuestionType()==2){
-                    arr = new Integer[2];
-                } else {
-                    arr = new Integer[question.getOptions().size()];
-                }
-                Arrays.fill(arr,0);
-                studentOptionDistribution.add(new ArrayList<>(Arrays.asList(arr)));
+    // 更新教师端数据
+    TeacherPaper teacherPaper = teacherPaperMapper.selectById(paperResultDTO.getTeacherPaperId());
+    teacherPaper.setAllScore(teacherPaper.getAllScore()+obtainScore);
+    teacherPaper.setCorrectQuestionNumber(teacherPaper.getCorrectQuestionNumber()+correctNumber);
+    // 更新完成人数
+    teacherPaper.setUndoneNumber(teacherPaper.getUndoneNumber()-1);
+    teacherPaper.setDoneNumber(teacherPaper.getDoneNumber()+1);
+    // 更新每题作答分布统计
+    List<List<Integer>> studentOptionDistribution = teacherPaper.getStudentOptionDistribution();
+    if(studentOptionDistribution==null){
+        studentOptionDistribution = new ArrayList<>();
+        for(Question question : questions){
+            Integer[] arr;
+            if(question.getQuestionType()==2){
+                arr = new Integer[2];
+            } else {
+                arr = new Integer[question.getOptions().size()];
             }
+            Arrays.fill(arr,0);
+            studentOptionDistribution.add(new ArrayList<>(Arrays.asList(arr)));
         }
-        for(int i=0;i<studentAnswerList.size();i++){
-            List<Integer> curStudentOptionList = studentOptionDistribution.get(i);
-            Object studentAnswer = studentAnswerList.get(i).getStudentAnswer();
-            if(studentAnswer==null){
-                continue;
-            }
-            // 单选
-            if(questions.get(i).getQuestionType() == 0){
-                curStudentOptionList.set((Integer)studentAnswer,curStudentOptionList.get((Integer)studentAnswer)+1);
-            }
-            // 多选
-            else if(questions.get(i).getQuestionType() == 1){
-                List<Integer> list = (List<Integer>) studentAnswer;
-                for(Integer num:list){
-                    curStudentOptionList.set(num,curStudentOptionList.get(num)+1);
-                }
-            }
-            // 判断题
-            else if(questions.get(i).getQuestionType() == 2){
-                if("T".equals(studentAnswer)){
-                    curStudentOptionList.set(0,curStudentOptionList.get(0)+1);
-                } else {
-                    curStudentOptionList.set(1,curStudentOptionList.get(1)+1);
-                }
-            }
-        }
-        teacherPaper.setStudentOptionDistribution(studentOptionDistribution);
-        teacherPaperMapper.updateById(teacherPaper);
     }
+    for(int i=0;i<studentAnswerList.size();i++){
+        List<Integer> curStudentOptionList = studentOptionDistribution.get(i);
+        Object studentAnswer = studentAnswerList.get(i).getStudentAnswer();
+        if(studentAnswer==null){
+            continue;
+        }
+        // 单选
+        if(questions.get(i).getQuestionType() == 0){
+            curStudentOptionList.set((Integer)studentAnswer,curStudentOptionList.get((Integer)studentAnswer)+1);
+        }
+        // 多选
+        else if(questions.get(i).getQuestionType() == 1){
+            List<Integer> list = (List<Integer>) studentAnswer;
+            for(Integer num:list){
+                curStudentOptionList.set(num,curStudentOptionList.get(num)+1);
+            }
+        }
+        // 判断题
+        else if(questions.get(i).getQuestionType() == 2){
+            if("T".equals(studentAnswer)){
+                curStudentOptionList.set(0,curStudentOptionList.get(0)+1);
+            } else {
+                curStudentOptionList.set(1,curStudentOptionList.get(1)+1);
+            }
+        }
+    }
+    teacherPaper.setStudentOptionDistribution(studentOptionDistribution);
+    teacherPaperMapper.updateById(teacherPaper);
+}
 
     public void startAnswering(String studentId,String paperId){
         StudentPaper studentPaper = new StudentPaper()
@@ -170,7 +170,7 @@ public class PaperService {
      */
     public void autoSubmitPaper(){
         QueryWrapper<StudentPaper> queryWrapper = new QueryWrapper<>();
-        queryWrapper.apply("date_format (deadline,'%Y-%m-%d %H:%i:%s') >= date_format('" + LocalDateTime.now() + "','%Y-%m-%d %H:%i:%s')")
+        queryWrapper.apply("date_format (deadline,'%Y-%m-%d %H:%i:%s') <= date_format('" + LocalDateTime.now() + "','%Y-%m-%d %H:%i:%s')")
                 .ne("finish_status",2);
         List<StudentPaper> list =  studentPaperMapper.selectList(queryWrapper);
         for(StudentPaper studentPaper:list){
